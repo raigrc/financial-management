@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import LandingImage from "@/public/landing-finance.svg";
-import { LoginButton } from "@/components/login-button";
+import { LoginButton } from "@/components/auth/login-button";
 
 export default function Home() {
   return (
