@@ -35,17 +35,30 @@ const LoginForm = () => {
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError("");
-    setSuccess("");
+const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
+  setError(""); // Clear previous errors
+  setSuccess(""); // Clear previous success messages
 
-    startTransition(() => {
-      login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
-      });
-    });
-  };
+  startTransition(async () => {
+    try {
+      const data = await login(values);
+
+      if (data && typeof data === "object") {
+        if (data.error) {
+          setError(data.error);
+        } else if (data.success) {
+          setSuccess(data.success);
+        }
+      } else {
+        setError("Unexpected response format");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An error occurred while logging in.");
+    }
+  });
+};
+
 
   return (
     <CardWrapper
