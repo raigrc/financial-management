@@ -1,5 +1,5 @@
 "use client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import {
@@ -22,7 +22,12 @@ import { login } from "@/actions/login";
 import { useTransition } from "react";
 
 const LoginForm = () => {
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already been used in other email provider"
+      : "";
+
   const [isPending, startTransition] = useTransition();
 
   const [success, setSuccess] = useState<string | undefined>();
@@ -89,7 +94,7 @@ const LoginForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <Button type="submit" className="w-full" disabled={isPending}>
             Login

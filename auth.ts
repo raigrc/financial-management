@@ -13,12 +13,19 @@ declare module "next-auth" {
   }
 }
 
-export const {
-  auth,
-  handlers,
-  signIn,
-  signOut,
-} = NextAuth({
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  pages: {
+    signIn: "/login",
+    error: "/error",
+  },
+  events: {
+    async linkAccount({ user }) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+    },
+  },
   callbacks: {
     jwt: async ({ token }) => {
       console.log({ token });
