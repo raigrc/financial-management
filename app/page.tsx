@@ -8,9 +8,7 @@ export default function Home() {
     <div className="h-full flex flex-row items-center max-w-screen-lg mx-auto justify-between">
       {/* left side | TEXT */}
       <div className="w-1/2 space-y-3">
-        <h1 className="text-6xl font-semibold drop-shadow-md">
-          Financial Management System
-        </h1>
+        <h1 className="text-6xl font-semibold drop-shadow-md">App Tracker</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
         <LoginButton>
           <Button className="my-6" size="lg">
