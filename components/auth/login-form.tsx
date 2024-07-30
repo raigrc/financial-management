@@ -1,5 +1,5 @@
 "use client";
-
+import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import {
@@ -22,6 +22,7 @@ import { login } from "@/actions/login";
 import { useTransition } from "react";
 
 const LoginForm = () => {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [success, setSuccess] = useState<string | undefined>();
@@ -35,30 +36,17 @@ const LoginForm = () => {
     },
   });
 
-const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
-  setError(""); // Clear previous errors
-  setSuccess(""); // Clear previous success messages
+  const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError(""); // Clear previous errors
+    setSuccess(""); // Clear previous success messages
 
-  startTransition(async () => {
-    try {
-      const data = await login(values);
-
-      if (data && typeof data === "object") {
-        if (data.error) {
-          setError(data.error);
-        } else if (data.success) {
-          setSuccess(data.success);
-        }
-      } else {
-        setError("Unexpected response format");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("An error occurred while logging in.");
-    }
-  });
-};
-
+    startTransition(() => {
+      login(values).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+      });
+    });
+  };
 
   return (
     <CardWrapper

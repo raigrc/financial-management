@@ -17,25 +17,25 @@ const { auth } = NextAuth(authConfig);
 
 export default auth(async function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  
-  const session = auth();
-  const isLoggedIn = !session;
+
+  const session = await auth();
 
   const isApiAuthPrefix = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
 
   if (isApiAuthPrefix) {
     return NextResponse.next();
   }
 
   if (isAuthRoute) {
-    if (isLoggedIn) {
+    if (session) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return NextResponse.next();
   }
-  if (!isLoggedIn && !isPublicRoute) {
+
+  if (!session && !isPublicRoute) {
     return Response.redirect(new URL("/login", nextUrl));
   }
 
