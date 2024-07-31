@@ -27,6 +27,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
   },
   callbacks: {
+    signIn: async ({ user, account }) => {
+      if (account?.provider !== "credentials") return true;
+
+      
+      const existingUser = await getUserById(user.id);
+
+      if (!existingUser?.emailVerified) return false;
+
+      return true;
+    },
     jwt: async ({ token }) => {
       console.log({ token });
       if (!token.sub) return token;
